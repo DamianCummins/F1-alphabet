@@ -120,7 +120,6 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
 
 function LearningScreen() {
   const [letterIndex, setLetterIndex] = useState(0);
-  // Key forces LetterScreen remount (resets all game state) when letter changes
   const [letterKey, setLetterKey] = useState(0);
 
   const navigateTo = (idx: number) => {
@@ -144,19 +143,21 @@ function LearningScreen() {
 
   const letterData = LETTERS[letterIndex];
 
-  // Swipe detection
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  // Swipe detection is scoped ONLY to the header strip — not the SVG game area.
+  // Attaching swipe to the full container would conflict with horizontal tracing
+  // gestures (e.g., the A crossbar stroke), causing accidental letter navigation.
+  const swipeTouchRef = useRef<{ x: number; y: number } | null>(null);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  const onHeaderTouchStart = (e: React.TouchEvent) => {
+    swipeTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStartRef.current) return;
-    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
-    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
-    touchStartRef.current = null;
-    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2) {
+  const onHeaderTouchEnd = (e: React.TouchEvent) => {
+    if (!swipeTouchRef.current) return;
+    const dx = e.changedTouches[0].clientX - swipeTouchRef.current.x;
+    const dy = e.changedTouches[0].clientY - swipeTouchRef.current.y;
+    swipeTouchRef.current = null;
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2.5) {
       if (dx > 0) handlePrev();
       else handleNext();
     }
@@ -166,20 +167,22 @@ function LearningScreen() {
     <div
       className="w-full h-full flex flex-col"
       style={{ background: 'linear-gradient(160deg, #0a0a1f 0%, #1a0510 60%, #0d0d2a 100%)' }}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
-      {/* Header */}
-      <div className="flex items-center gap-3 px-3 pt-3 pb-1 shrink-0">
-        {/* Prev button */}
+      {/* Header — swipe left/right here to switch letters (safe zone: no tracing gestures) */}
+      <div
+        className="flex items-center gap-3 px-3 pt-3 pb-1 shrink-0"
+        onTouchStart={onHeaderTouchStart}
+        onTouchEnd={onHeaderTouchEnd}
+      >
+        {/* Prev button — 64×64 for toddler touch target */}
         <button
           onClick={handlePrev}
           disabled={letterIndex === 0}
           className="flex items-center justify-center rounded-full font-black text-black shrink-0"
           style={{
-            width: 52,
-            height: 52,
-            fontSize: '1.4rem',
+            width: 64,
+            height: 64,
+            fontSize: '1.7rem',
             background:
               letterIndex === 0
                 ? 'rgba(255,255,255,0.08)'
@@ -216,7 +219,7 @@ function LearningScreen() {
               is for {letterData.wordHint}
             </span>
           </div>
-          {/* Letter dots indicator */}
+          {/* Letter indicator dots */}
           <div className="flex justify-center gap-2 mt-1">
             {LETTERS.map((l, i) => (
               <button
@@ -224,8 +227,8 @@ function LearningScreen() {
                 onClick={() => navigateTo(i)}
                 className="rounded-full font-bold text-xs transition-all"
                 style={{
-                  width: i === letterIndex ? 32 : 24,
-                  height: 24,
+                  width: i === letterIndex ? 36 : 36,
+                  height: 36,
                   background:
                     i === letterIndex
                       ? '#E8002D'
@@ -234,6 +237,7 @@ function LearningScreen() {
                         : 'rgba(255,255,255,0.12)',
                   color: i === letterIndex ? 'white' : 'rgba(255,255,255,0.5)',
                   border: '1.5px solid rgba(255,255,255,0.15)',
+                  fontSize: '1rem',
                 }}
               >
                 {l.letter}
@@ -242,15 +246,15 @@ function LearningScreen() {
           </div>
         </div>
 
-        {/* Next button */}
+        {/* Next button — 64×64 for toddler touch target */}
         <button
           onClick={handleNext}
           disabled={letterIndex === LETTERS.length - 1}
           className="flex items-center justify-center rounded-full font-black shrink-0"
           style={{
-            width: 52,
-            height: 52,
-            fontSize: '1.4rem',
+            width: 64,
+            height: 64,
+            fontSize: '1.7rem',
             background:
               letterIndex === LETTERS.length - 1
                 ? 'rgba(255,255,255,0.08)'
@@ -265,7 +269,7 @@ function LearningScreen() {
         </button>
       </div>
 
-      {/* Game area */}
+      {/* Game area — full-width SVG, no touch/swipe navigation here */}
       <div className="flex-1 px-2 pb-2" style={{ minHeight: 0 }}>
         <div
           className="w-full h-full rounded-2xl overflow-hidden"
