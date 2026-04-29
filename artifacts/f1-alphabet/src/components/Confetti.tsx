@@ -40,7 +40,7 @@ export default function Confetti({ letterData, onNext, isLast }: ConfettiProps) 
     }));
     setParticles(ps);
 
-    timerRef.current = setTimeout(() => setShowButton(true), 1800);
+    timerRef.current = setTimeout(() => setShowButton(true), 2200);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
