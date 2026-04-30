@@ -231,120 +231,156 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
           {/* Grass background */}
           <rect x="0" y="0" width={vbW} height={vbH} fill="#22c55e" />
 
-          {/* Render track for each stroke */}
+          {/*
+           * Track rendering — grouped BY LAYER, not by stroke.
+           * This prevents opacity/colour bleed at junctions where strokes overlap.
+           * Future strokes use muted colour values (not group opacity) so overlapping
+           * future-on-future paths are always the same colour and produce no seam.
+           */}
+
+          {/* Layer 1 — Grass edge (all strokes) */}
           {letterData.strokes.map((stroke, i) => {
-            const completed = isStrokeCompleted(i);
+            const future = i > currentStrokeIdx && !showCelebration;
+            return (
+              <path
+                key={`grass-${i}`}
+                d={stroke.path}
+                stroke={future ? '#1a7a38' : '#16a34a'}
+                strokeWidth={GRASS_W}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            );
+          })}
+
+          {/* Layer 2 — White kerb stripe (all strokes) */}
+          {letterData.strokes.map((stroke, i) => {
+            const future = i > currentStrokeIdx && !showCelebration;
+            return (
+              <path
+                key={`kerb-w-${i}`}
+                d={stroke.path}
+                stroke={future ? 'rgba(255,255,255,0.28)' : 'white'}
+                strokeWidth={KERB_W}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                strokeDasharray="11 11"
+                fill="none"
+              />
+            );
+          })}
+
+          {/* Layer 3 — Red kerb stripe (all strokes) */}
+          {letterData.strokes.map((stroke, i) => {
+            const future = i > currentStrokeIdx && !showCelebration;
+            return (
+              <path
+                key={`kerb-r-${i}`}
+                d={stroke.path}
+                stroke={future ? 'rgba(180,30,30,0.28)' : '#dc2626'}
+                strokeWidth={KERB_W}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                strokeDasharray="11 11"
+                strokeDashoffset="11"
+                fill="none"
+              />
+            );
+          })}
+
+          {/* Layer 4 — Road surface (all strokes) */}
+          {letterData.strokes.map((stroke, i) => {
+            const future = i > currentStrokeIdx && !showCelebration;
+            return (
+              <path
+                key={`road-${i}`}
+                d={stroke.path}
+                stroke={future ? '#3d4f63' : '#2d3748'}
+                strokeWidth={ROAD_W}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            );
+          })}
+
+          {/* Layer 5 — Road centre dashes (all strokes) */}
+          {letterData.strokes.map((stroke, i) => {
+            const future = i > currentStrokeIdx && !showCelebration;
+            return (
+              <path
+                key={`centre-${i}`}
+                d={stroke.path}
+                stroke={future ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.45)'}
+                strokeWidth={2.5}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                strokeDasharray="9 7"
+                fill="none"
+              />
+            );
+          })}
+
+          {/* Layer 6 — Golden completed overlay (completed strokes only) */}
+          {letterData.strokes.map((stroke, i) =>
+            isStrokeCompleted(i) ? (
+              <path
+                key={`gold-${i}`}
+                d={stroke.path}
+                stroke="rgba(255,215,0,0.15)"
+                strokeWidth={ROAD_W}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            ) : null
+          )}
+
+          {/* Layer 7 — Start/finish chequered markers (active + future strokes) */}
+          {letterData.strokes.map((stroke, i) => {
             const active = i === currentStrokeIdx;
             const future = i > currentStrokeIdx && !showCelebration;
-            const opacity = future ? 0.32 : 1;
-
+            if (!active && !future) return null;
             return (
-              <g key={i} opacity={opacity}>
-                {/* Outer grass edge */}
-                <path
-                  d={stroke.path}
-                  stroke="#16a34a"
-                  strokeWidth={GRASS_W}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="none"
-                />
-
-                {/* White kerb stripe */}
-                <path
-                  d={stroke.path}
+              <g key={`marker-${i}`}>
+                <circle
+                  cx={stroke.startX}
+                  cy={stroke.startY}
+                  r={16}
+                  fill="url(#checker)"
                   stroke="white"
-                  strokeWidth={KERB_W}
-                  strokeLinecap="butt"
-                  strokeLinejoin="round"
-                  strokeDasharray="11 11"
-                  fill="none"
+                  strokeWidth={3}
                 />
-
-                {/* Red kerb stripe (offset to fill gaps) */}
-                <path
-                  d={stroke.path}
-                  stroke="#dc2626"
-                  strokeWidth={KERB_W}
-                  strokeLinecap="butt"
-                  strokeLinejoin="round"
-                  strokeDasharray="11 11"
-                  strokeDashoffset="11"
-                  fill="none"
-                />
-
-                {/* Road surface */}
-                <path
-                  d={stroke.path}
-                  stroke="#2d3748"
-                  strokeWidth={ROAD_W}
-                  strokeLinecap="butt"
-                  strokeLinejoin="round"
-                  fill="none"
-                />
-
-                {/* Road centre dashes */}
-                <path
-                  d={stroke.path}
-                  stroke="rgba(255,255,255,0.45)"
-                  strokeWidth={2.5}
-                  strokeLinecap="butt"
-                  strokeLinejoin="round"
-                  strokeDasharray="9 7"
-                  fill="none"
-                />
-
-                {/* Completed track overlay (golden tint) */}
-                {completed && (
-                  <path
-                    d={stroke.path}
-                    stroke="rgba(255,215,0,0.15)"
-                    strokeWidth={ROAD_W}
-                    strokeLinecap="butt"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                )}
-
-                {/* Start / finish chequered marker */}
-                {(active || future) && (
-                  <g>
-                    <circle
-                      cx={stroke.startX}
-                      cy={stroke.startY}
-                      r={16}
-                      fill="url(#checker)"
-                      stroke="white"
-                      strokeWidth={3}
-                    />
-                    <text
-                      x={stroke.startX}
-                      y={stroke.startY + 28}
-                      textAnchor="middle"
-                      fontSize={10}
-                      fontWeight="bold"
-                      fontFamily="Arial, sans-serif"
-                      fill="white"
-                      style={{ paintOrder: 'stroke', stroke: '#000', strokeWidth: 3 }}
-                    >
-                      GO!
-                    </text>
-                  </g>
-                )}
-
-                {/* Hidden mathematical path for getPointAtLength */}
-                <path
-                  d={stroke.path}
-                  stroke="transparent"
-                  strokeWidth={1}
-                  fill="none"
-                  ref={(el) => {
-                    pathRefs.current[i] = el;
-                  }}
-                />
+                <text
+                  x={stroke.startX}
+                  y={stroke.startY + 28}
+                  textAnchor="middle"
+                  fontSize={10}
+                  fontWeight="bold"
+                  fontFamily="Arial, sans-serif"
+                  fill="white"
+                  style={{ paintOrder: 'stroke', stroke: '#000', strokeWidth: 3 }}
+                >
+                  GO!
+                </text>
               </g>
             );
           })}
+
+          {/* Layer 8 — Hidden math paths for getPointAtLength (must stay per-stroke with refs) */}
+          {letterData.strokes.map((stroke, i) => (
+            <path
+              key={`math-${i}`}
+              d={stroke.path}
+              stroke="transparent"
+              strokeWidth={1}
+              fill="none"
+              ref={(el) => {
+                pathRefs.current[i] = el;
+              }}
+            />
+          ))}
 
           {/* Locked (completed) cars */}
           {completedCars.map((car, i) => (
