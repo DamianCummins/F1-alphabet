@@ -261,7 +261,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               <path
                 key={`kerb-w-${i}`}
                 d={stroke.path}
-                stroke={future ? 'rgba(255,255,255,0.28)' : 'white'}
+                stroke={future ? '#7a9e7a' : 'white'}
                 strokeWidth={KERB_W}
                 strokeLinecap="butt"
                 strokeLinejoin="round"
@@ -278,7 +278,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               <path
                 key={`kerb-r-${i}`}
                 d={stroke.path}
-                stroke={future ? 'rgba(180,30,30,0.28)' : '#dc2626'}
+                stroke={future ? '#5c3030' : '#dc2626'}
                 strokeWidth={KERB_W}
                 strokeLinecap="butt"
                 strokeLinejoin="round"
@@ -312,7 +312,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               <path
                 key={`centre-${i}`}
                 d={stroke.path}
-                stroke={future ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.45)'}
+                stroke={future ? '#4e6070' : '#8fa3b3'}
                 strokeWidth={2.5}
                 strokeLinecap="butt"
                 strokeLinejoin="round"
@@ -328,7 +328,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               <path
                 key={`gold-${i}`}
                 d={stroke.path}
-                stroke="rgba(255,215,0,0.15)"
+                stroke="#4d4f3d"
                 strokeWidth={ROAD_W}
                 strokeLinecap="butt"
                 strokeLinejoin="round"
