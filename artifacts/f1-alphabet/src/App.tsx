@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { LETTERS } from './data/letters';
 import LetterScreen from './components/LetterScreen';
 
@@ -65,7 +65,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
               letterSpacing: '-0.02em',
             }}
           >
-            ABC
+            A–Z
           </span>
         </div>
 
@@ -148,6 +148,20 @@ function LearningScreen() {
   // gestures (e.g., the A crossbar stroke), causing accidental letter navigation.
   const swipeTouchRef = useRef<{ x: number; y: number } | null>(null);
 
+  // Scrollable letter dot strip — keep active dot centred
+  const dotsRef = useRef<HTMLDivElement>(null);
+  const activeDotRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (activeDotRef.current && dotsRef.current) {
+      const strip = dotsRef.current;
+      const dot = activeDotRef.current;
+      const stripRect = strip.getBoundingClientRect();
+      const dotRect = dot.getBoundingClientRect();
+      const dotCentre = dotRect.left - stripRect.left + strip.scrollLeft + dotRect.width / 2;
+      strip.scrollTo({ left: dotCentre - strip.clientWidth / 2, behavior: 'smooth' });
+    }
+  }, [letterIndex]);
+
   const onHeaderTouchStart = (e: React.TouchEvent) => {
     swipeTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   };
@@ -219,16 +233,27 @@ function LearningScreen() {
               is for {letterData.wordHint}
             </span>
           </div>
-          {/* Letter indicator dots */}
-          <div className="flex justify-center gap-2 mt-1">
+          {/* Letter indicator dots — scrollable strip */}
+          <div
+            ref={dotsRef}
+            className="flex gap-1 mt-1 overflow-x-auto"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch',
+              paddingLeft: 4,
+              paddingRight: 4,
+            }}
+          >
             {LETTERS.map((l, i) => (
               <button
                 key={l.letter}
+                ref={i === letterIndex ? activeDotRef : undefined}
                 onClick={() => navigateTo(i)}
-                className="rounded-full font-bold text-xs transition-all"
+                className="rounded-full font-bold transition-all shrink-0"
                 style={{
-                  width: i === letterIndex ? 36 : 36,
-                  height: 36,
+                  width: 28,
+                  height: 28,
                   background:
                     i === letterIndex
                       ? '#E8002D'
@@ -237,7 +262,7 @@ function LearningScreen() {
                         : 'rgba(255,255,255,0.12)',
                   color: i === letterIndex ? 'white' : 'rgba(255,255,255,0.5)',
                   border: '1.5px solid rgba(255,255,255,0.15)',
-                  fontSize: '1rem',
+                  fontSize: '0.7rem',
                 }}
               >
                 {l.letter}
