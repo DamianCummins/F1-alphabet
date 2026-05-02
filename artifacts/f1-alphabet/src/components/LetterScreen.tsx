@@ -153,6 +153,21 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
     isDraggingRef.current = false;
   };
 
+  // End-point / angle for each stroke's finish line marker (computed after paths mount)
+  const [strokeEnds, setStrokeEnds] = useState<Array<{ x: number; y: number; angle: number } | null>>([]);
+
+  useEffect(() => {
+    const ends = letterData.strokes.map((_, i) => {
+      const path = pathRefs.current[i];
+      if (!path) return null;
+      const total = path.getTotalLength();
+      const pt = path.getPointAtLength(total);
+      const angle = getPathAngle(path, total);
+      return { x: pt.x, y: pt.y, angle };
+    });
+    setStrokeEnds(ends);
+  }, [letterData]);
+
   // Overall progress
   const totalStrokes = letterData.strokes.length;
   const activeTotalLen = pathRefs.current[currentStrokeIdx]?.getTotalLength() || 1;
@@ -337,33 +352,48 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
             ) : null
           )}
 
-          {/* Layer 7 — Start/finish chequered markers (active + future strokes) */}
-          {letterData.strokes.map((stroke, i) => {
+          {/* Layer 7 — Finish line & flag at end of each active/future stroke */}
+          {letterData.strokes.map((_, i) => {
             const active = i === currentStrokeIdx;
             const future = i > currentStrokeIdx && !showCelebration;
             if (!active && !future) return null;
+            const end = strokeEnds[i];
+            if (!end) return null;
+            const { x: ex, y: ey, angle: ea } = end;
+            const dim = future;
             return (
-              <g key={`marker-${i}`}>
-                <circle
-                  cx={stroke.startX}
-                  cy={stroke.startY}
-                  r={16}
+              <g key={`finish-${i}`} opacity={dim ? 0.4 : 1}>
+                {/* Finish line bar — perpendicular to path direction */}
+                <rect
+                  x={ex - 5}
+                  y={ey - 16}
+                  width={10}
+                  height={32}
                   fill="url(#checker)"
                   stroke="white"
-                  strokeWidth={3}
+                  strokeWidth={2}
+                  transform={`rotate(${ea}, ${ex}, ${ey})`}
                 />
-                <text
-                  x={stroke.startX}
-                  y={stroke.startY + 28}
-                  textAnchor="middle"
-                  fontSize={10}
-                  fontWeight="bold"
-                  fontFamily="Arial, sans-serif"
-                  fill="white"
-                  style={{ paintOrder: 'stroke', stroke: '#000', strokeWidth: 3 }}
-                >
-                  GO!
-                </text>
+                {/* Flag pole — always vertical in screen space */}
+                <line
+                  x1={ex}
+                  y1={ey - 16}
+                  x2={ex}
+                  y2={ey - 46}
+                  stroke="white"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
+                {/* Chequered flag head */}
+                <rect
+                  x={ex}
+                  y={ey - 46}
+                  width={18}
+                  height={13}
+                  fill="url(#checker)"
+                  stroke="white"
+                  strokeWidth={1.5}
+                />
               </g>
             );
           })}
