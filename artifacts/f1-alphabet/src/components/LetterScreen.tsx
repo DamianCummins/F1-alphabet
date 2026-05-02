@@ -249,108 +249,111 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
           {/*
            * Track rendering — grouped BY LAYER, not by stroke.
            * This prevents opacity/colour bleed at junctions where strokes overlap.
-           * Future strokes use muted colour values (not group opacity) so overlapping
-           * future-on-future paths are always the same colour and produce no seam.
+           * All strokes use the same colours regardless of active/future state.
            */}
 
           {/* Layer 1 — Grass edge (all strokes) */}
-          {letterData.strokes.map((stroke, i) => {
-            const future = i > currentStrokeIdx && !showCelebration;
-            return (
-              <path
-                key={`grass-${i}`}
-                d={stroke.path}
-                stroke={future ? '#1a7a38' : '#16a34a'}
-                strokeWidth={GRASS_W}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            );
-          })}
+          {letterData.strokes.map((stroke, i) => (
+            <path
+              key={`grass-${i}`}
+              d={stroke.path}
+              stroke="#16a34a"
+              strokeWidth={GRASS_W}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          ))}
 
           {/* Layer 2 — White kerb stripe (all strokes) */}
-          {letterData.strokes.map((stroke, i) => {
-            const future = i > currentStrokeIdx && !showCelebration;
-            return (
-              <path
-                key={`kerb-w-${i}`}
-                d={stroke.path}
-                stroke={future ? '#7a9e7a' : 'white'}
-                strokeWidth={KERB_W}
-                strokeLinecap="butt"
-                strokeLinejoin="round"
-                strokeDasharray="11 11"
-                fill="none"
-              />
-            );
-          })}
+          {letterData.strokes.map((stroke, i) => (
+            <path
+              key={`kerb-w-${i}`}
+              d={stroke.path}
+              stroke="white"
+              strokeWidth={KERB_W}
+              strokeLinecap="butt"
+              strokeLinejoin="round"
+              strokeDasharray="11 11"
+              fill="none"
+            />
+          ))}
 
           {/* Layer 3 — Red kerb stripe (all strokes) */}
-          {letterData.strokes.map((stroke, i) => {
-            const future = i > currentStrokeIdx && !showCelebration;
-            return (
-              <path
-                key={`kerb-r-${i}`}
-                d={stroke.path}
-                stroke={future ? '#5c3030' : '#dc2626'}
-                strokeWidth={KERB_W}
-                strokeLinecap="butt"
-                strokeLinejoin="round"
-                strokeDasharray="11 11"
-                strokeDashoffset="11"
-                fill="none"
-              />
-            );
-          })}
+          {letterData.strokes.map((stroke, i) => (
+            <path
+              key={`kerb-r-${i}`}
+              d={stroke.path}
+              stroke="#dc2626"
+              strokeWidth={KERB_W}
+              strokeLinecap="butt"
+              strokeLinejoin="round"
+              strokeDasharray="11 11"
+              strokeDashoffset="11"
+              fill="none"
+            />
+          ))}
 
           {/* Layer 4 — Road surface (all strokes) */}
+          {letterData.strokes.map((stroke, i) => (
+            <path
+              key={`road-${i}`}
+              d={stroke.path}
+              stroke="#2d3748"
+              strokeWidth={ROAD_W}
+              strokeLinecap="butt"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          ))}
+
+          {/* Layer 5 — White progress trail (completed strokes = full; active stroke = driven portion) */}
           {letterData.strokes.map((stroke, i) => {
-            const future = i > currentStrokeIdx && !showCelebration;
-            return (
-              <path
-                key={`road-${i}`}
-                d={stroke.path}
-                stroke={future ? '#3d4f63' : '#2d3748'}
-                strokeWidth={ROAD_W}
-                strokeLinecap="butt"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            );
+            if (isStrokeCompleted(i)) {
+              return (
+                <path
+                  key={`trail-${i}`}
+                  d={stroke.path}
+                  stroke="white"
+                  strokeWidth={10}
+                  strokeOpacity={0.8}
+                  strokeLinecap="butt"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              );
+            }
+            if (i === currentStrokeIdx && carLength > 0) {
+              return (
+                <path
+                  key={`trail-${i}`}
+                  d={stroke.path}
+                  stroke="white"
+                  strokeWidth={10}
+                  strokeOpacity={0.8}
+                  strokeLinecap="butt"
+                  strokeLinejoin="round"
+                  strokeDasharray={`${carLength} 99999`}
+                  fill="none"
+                />
+              );
+            }
+            return null;
           })}
 
-          {/* Layer 5 — Road centre dashes (all strokes) */}
-          {letterData.strokes.map((stroke, i) => {
-            const future = i > currentStrokeIdx && !showCelebration;
-            return (
-              <path
-                key={`centre-${i}`}
-                d={stroke.path}
-                stroke={future ? '#4e6070' : '#8fa3b3'}
-                strokeWidth={2.5}
-                strokeLinecap="butt"
-                strokeLinejoin="round"
-                strokeDasharray="9 7"
-                fill="none"
-              />
-            );
-          })}
-
-          {/* Layer 6 — Golden completed overlay (completed strokes only) */}
-          {letterData.strokes.map((stroke, i) =>
-            isStrokeCompleted(i) ? (
-              <path
-                key={`gold-${i}`}
-                d={stroke.path}
-                stroke="#4d4f3d"
-                strokeWidth={ROAD_W}
-                strokeLinecap="butt"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            ) : null
-          )}
+          {/* Layer 6 — Road centre dashes (all strokes) */}
+          {letterData.strokes.map((stroke, i) => (
+            <path
+              key={`centre-${i}`}
+              d={stroke.path}
+              stroke="#8fa3b3"
+              strokeWidth={2.5}
+              strokeLinecap="butt"
+              strokeLinejoin="round"
+              strokeDasharray="9 7"
+              fill="none"
+            />
+          ))}
 
           {/* Layer 7 — Finish line at end of the active stroke only */}
           {letterData.strokes.map((_, i) => {
