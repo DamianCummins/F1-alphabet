@@ -149,9 +149,14 @@ function LearningScreen() {
   const swipeTouchRef = useRef<{ x: number; y: number } | null>(null);
 
   // Scrollable letter dot strip — keep active dot centred
+  const dotsRef = useRef<HTMLDivElement>(null);
   const activeDotRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    activeDotRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    const strip = dotsRef.current;
+    const dot = activeDotRef.current;
+    if (!strip || !dot) return;
+    const targetScroll = dot.offsetLeft - strip.clientWidth / 2 + dot.offsetWidth / 2;
+    strip.scrollTo({ left: targetScroll, behavior: 'smooth' });
   }, [letterIndex]);
 
   const onHeaderTouchStart = (e: React.TouchEvent) => {
@@ -227,6 +232,7 @@ function LearningScreen() {
           </div>
           {/* Letter indicator dots — scrollable strip */}
           <div
+            ref={dotsRef}
             className="flex gap-1 mt-1 overflow-x-auto"
             style={{
               scrollbarWidth: 'none',
