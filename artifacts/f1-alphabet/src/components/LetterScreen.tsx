@@ -324,6 +324,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               );
             }
             if (i === currentStrokeIdx && carLength > 0) {
+              const remaining = Math.max(0, activeTotalLen - carLength);
               return (
                 <path
                   key={`trail-${i}`}
@@ -333,7 +334,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
                   strokeOpacity={0.8}
                   strokeLinecap="butt"
                   strokeLinejoin="round"
-                  strokeDasharray={`${carLength} 99999`}
+                  strokeDasharray={`${carLength} ${remaining}`}
                   fill="none"
                 />
               );
