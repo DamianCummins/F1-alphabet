@@ -437,13 +437,6 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
             />
           ))}
 
-          {/* Locked (completed) cars */}
-          {completedCars.map((car, i) => (
-            <g key={`locked-${i}`} filter="url(#carShadow)">
-              <F1Car x={car.x} y={car.y} angle={car.angle} locked />
-            </g>
-          ))}
-
           {/* Active draggable car */}
           {carVisible && !showCelebration && (
             <g filter="url(#carShadow)">
