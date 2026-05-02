@@ -352,17 +352,14 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
             ) : null
           )}
 
-          {/* Layer 7 — Finish line & flag at end of each active/future stroke */}
+          {/* Layer 7 — Finish line at end of the active stroke only */}
           {letterData.strokes.map((_, i) => {
-            const active = i === currentStrokeIdx;
-            const future = i > currentStrokeIdx && !showCelebration;
-            if (!active && !future) return null;
+            if (i !== currentStrokeIdx || showCelebration) return null;
             const end = strokeEnds[i];
             if (!end) return null;
             const { x: ex, y: ey, angle: ea } = end;
-            const dim = future;
             return (
-              <g key={`finish-${i}`} opacity={dim ? 0.4 : 1}>
+              <g key={`finish-${i}`}>
                 {/* Finish line bar — perpendicular to path direction */}
                 <rect
                   x={ex - 5}
@@ -373,26 +370,6 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
                   stroke="white"
                   strokeWidth={2}
                   transform={`rotate(${ea}, ${ex}, ${ey})`}
-                />
-                {/* Flag pole — always vertical in screen space */}
-                <line
-                  x1={ex}
-                  y1={ey - 16}
-                  x2={ex}
-                  y2={ey - 46}
-                  stroke="white"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                />
-                {/* Chequered flag head */}
-                <rect
-                  x={ex}
-                  y={ey - 46}
-                  width={18}
-                  height={13}
-                  fill="url(#checker)"
-                  stroke="white"
-                  strokeWidth={1.5}
                 />
               </g>
             );
