@@ -151,7 +151,7 @@ export const LETTERS: LetterData[] = [
     wordHint: 'Gear',
     strokes: [
       {
-        path: 'M 162 72 A 82 80 0 1 0 162 178',
+        path: 'M 162 72 A 82 80 0 1 0 162 125',
         startX: 162,
         startY: 72,
         label: 'Arc',
