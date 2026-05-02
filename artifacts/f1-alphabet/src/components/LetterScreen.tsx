@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { LetterData } from '../data/letters';
+import { LetterData, Stroke } from '../data/letters';
 import { screenToSVG, findClosestLength, getPathAngle } from '../utils/pathUtils';
 import F1Car from './F1Car';
 import Confetti from './Confetti';
@@ -20,6 +20,38 @@ const ROAD_W = 40;
 const GRASS_W = 56;
 const KERB_W = 52;
 const SNAP_RADIUS = 60; // SVG units within which a touch "grabs" the car
+
+/** Extract the final coordinate pair from an SVG path string */
+function parsePathEndpoint(d: string): { x: number; y: number } | null {
+  const nums = d.trim().match(/-?\d+\.?\d*/g);
+  if (!nums || nums.length < 2) return null;
+  return { x: parseFloat(nums[nums.length - 2]), y: parseFloat(nums[nums.length - 1]) };
+}
+
+/** Find points where two or more stroke endpoints coincide (junctions) */
+function findJunctionPoints(strokes: Stroke[], tolerance = 4): Array<{ x: number; y: number }> {
+  const pts: Array<{ x: number; y: number }> = [];
+  for (const s of strokes) {
+    pts.push({ x: s.startX, y: s.startY });
+    const end = parsePathEndpoint(s.path);
+    if (end) pts.push(end);
+  }
+  const used = new Array(pts.length).fill(false);
+  const junctions: Array<{ x: number; y: number }> = [];
+  for (let i = 0; i < pts.length; i++) {
+    if (used[i]) continue;
+    let count = 1;
+    for (let j = i + 1; j < pts.length; j++) {
+      if (Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y) < tolerance) {
+        used[j] = true;
+        count++;
+      }
+    }
+    if (count > 1) junctions.push(pts[i]);
+    used[i] = true;
+  }
+  return junctions;
+}
 
 export default function LetterScreen({ letterData, isLast, onLetterComplete }: LetterScreenProps) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -264,6 +296,10 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               fill="none"
             />
           ))}
+          {/* Junction circles — grass layer */}
+          {findJunctionPoints(letterData.strokes).map((pt, i) => (
+            <circle key={`junc-grass-${i}`} cx={pt.x} cy={pt.y} r={GRASS_W / 2} fill="#16a34a" />
+          ))}
 
           {/* Layer 2 — White kerb stripe (all strokes) */}
           {letterData.strokes.map((stroke, i) => (
@@ -277,6 +313,10 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               strokeDasharray="11 11"
               fill="none"
             />
+          ))}
+          {/* Junction circles — kerb layer (solid white base, road covers centre) */}
+          {findJunctionPoints(letterData.strokes).map((pt, i) => (
+            <circle key={`junc-kerb-${i}`} cx={pt.x} cy={pt.y} r={KERB_W / 2} fill="white" />
           ))}
 
           {/* Layer 3 — Red kerb stripe (all strokes) */}
@@ -294,17 +334,21 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
             />
           ))}
 
-          {/* Layer 4 — Road surface (all strokes) */}
+          {/* Layer 4 — Road surface (all strokes) — round caps for smooth stroke ends */}
           {letterData.strokes.map((stroke, i) => (
             <path
               key={`road-${i}`}
               d={stroke.path}
               stroke="#2d3748"
               strokeWidth={ROAD_W}
-              strokeLinecap="butt"
+              strokeLinecap="round"
               strokeLinejoin="round"
               fill="none"
             />
+          ))}
+          {/* Junction circles — road layer (covers kerb/grass sharp edges at joins) */}
+          {findJunctionPoints(letterData.strokes).map((pt, i) => (
+            <circle key={`junc-road-${i}`} cx={pt.x} cy={pt.y} r={ROAD_W / 2} fill="#2d3748" />
           ))}
 
           {/* Layer 5 — White progress trail (completed strokes = full; active stroke = driven portion) */}
