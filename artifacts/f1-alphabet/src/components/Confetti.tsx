@@ -46,13 +46,12 @@ export default function Confetti({ letterData, onNext, isLast }: ConfettiProps) 
     };
   }, []);
 
+  const nextLetter = isLast ? null : String.fromCharCode(letterData.letter.charCodeAt(0) + 1);
+
   return (
-    <div
-      className="absolute inset-0 flex flex-col items-center justify-center z-50"
-      style={{ background: 'rgba(10,10,30,0.88)' }}
-    >
-      {/* Confetti particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 z-50 pointer-events-none">
+      {/* Confetti particles — no background, letter stays visible */}
+      <div className="absolute inset-0 overflow-hidden">
         {particles.map((p) => (
           <div
             key={p.id}
@@ -69,47 +68,26 @@ export default function Confetti({ letterData, onNext, isLast }: ConfettiProps) 
         ))}
       </div>
 
-      {/* Central message */}
-      <div className="relative z-10 flex flex-col items-center gap-4 px-8 text-center">
-        <div className="text-7xl" style={{ animation: 'bounceIn 0.5s ease-out' }}>
-          🏁
-        </div>
-        <h2
-          className="text-white font-black tracking-tight"
-          style={{
-            fontSize: 'clamp(2rem, 8vw, 4rem)',
-            textShadow: '0 0 20px #FFD700, 0 4px 0 #cc0000',
-            animation: 'bounceIn 0.6s 0.1s ease-out both',
-          }}
-        >
-          GREAT DRIVE!
-        </h2>
-        <p
-          className="text-yellow-300 font-bold"
-          style={{
-            fontSize: 'clamp(1.1rem, 4vw, 1.8rem)',
-            animation: 'bounceIn 0.6s 0.25s ease-out both',
-          }}
-        >
-          You traced the letter{' '}
-          <span className="text-white text-4xl">{letterData.letter}</span>!
-        </p>
-
-        {showButton && (
+      {/* Next button — bottom-centre, large touch target */}
+      {showButton && (
+        <div className="absolute inset-0 flex items-end justify-center pb-8 pointer-events-none">
           <button
             onClick={onNext}
-            className="mt-4 font-black text-black rounded-full px-10 py-4 text-2xl"
+            className="pointer-events-auto flex items-center justify-center rounded-full font-black text-black"
             style={{
+              width: 96,
+              height: 96,
+              fontSize: isLast ? '2.8rem' : '2rem',
               background: 'linear-gradient(135deg, #FFD700, #FFA000)',
-              boxShadow: '0 6px 24px rgba(255,215,0,0.5)',
+              boxShadow: '0 6px 28px rgba(255,215,0,0.6), 0 2px 8px rgba(0,0,0,0.4)',
+              border: '4px solid #fff',
               animation: 'bounceIn 0.5s ease-out',
-              border: '3px solid #fff',
             }}
           >
-            {isLast ? '🏆 The End!' : `Next: ${String.fromCharCode(letterData.letter.charCodeAt(0) + 1)} →`}
+            {isLast ? '🏆' : nextLetter}
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
