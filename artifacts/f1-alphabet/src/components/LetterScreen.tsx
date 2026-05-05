@@ -166,7 +166,16 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
 
     const svgPt = screenToSVG(svg, e.clientX, e.clientY);
     const totalLen = path.getTotalLength();
-    const closestLen = Math.max(0, Math.min(totalLen, findClosestLength(path, svgPt.x, svgPt.y)));
+    let closestLen = Math.max(0, Math.min(totalLen, findClosestLength(path, svgPt.x, svgPt.y)));
+
+    // Prevent false snapping to the path end when near the start (affects closed loops
+    // like O and Q where start and end points are the same or very close).
+    // A legitimate drag produces tiny incremental moves; a jump of >35% of the path
+    // in one pointermove event is always a false match to the wrong end of the loop.
+    const currentLen = carLength;
+    if (Math.abs(closestLen - currentLen) > totalLen * 0.35) {
+      closestLen = currentLen;
+    }
 
     const pt = path.getPointAtLength(closestLen);
     const ang = getPathAngle(path, closestLen);
