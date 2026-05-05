@@ -33,6 +33,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
             style={{
               top: `${30 + i * 20}%`,
               animation: `racingCar ${1.8 + i * 0.5}s ${i * 0.6}s linear infinite`,
+              animationFillMode: 'backwards',
               fontSize: '2rem',
             }}
           >
@@ -111,7 +112,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
             letterSpacing: '0.02em',
           }}
         >
-          🏎️ LET'S RACE!
+          <span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>🏎️</span> LET'S RACE!
         </button>
       </div>
     </div>
