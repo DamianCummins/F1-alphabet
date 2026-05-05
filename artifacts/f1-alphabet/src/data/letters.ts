@@ -151,15 +151,15 @@ export const LETTERS: LetterData[] = [
     wordHint: 'Gear',
     strokes: [
       {
-        path: 'M 162 72 A 82 80 0 1 0 162 125',
-        startX: 162,
-        startY: 72,
+        path: 'M 155 65 C 155 22 45 22 45 125 C 45 228 155 228 155 175',
+        startX: 155,
+        startY: 65,
         label: 'Arc',
       },
       {
-        path: 'M 162 125 L 112 125',
-        startX: 162,
-        startY: 125,
+        path: 'M 155 175 L 105 175',
+        startX: 155,
+        startY: 175,
         label: 'Shelf',
       },
     ],
@@ -415,9 +415,9 @@ export const LETTERS: LetterData[] = [
     wordHint: 'Speed',
     strokes: [
       {
-        path: 'M 155 65 C 155 22 45 22 45 103 C 45 160 155 162 155 203 C 155 228 45 228 45 195',
+        path: 'M 155 55 C 155 22 45 22 45 125 C 45 228 155 228 155 195',
         startX: 155,
-        startY: 65,
+        startY: 55,
         label: 'S-curve',
       },
     ],
