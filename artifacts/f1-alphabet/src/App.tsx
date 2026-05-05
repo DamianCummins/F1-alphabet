@@ -128,14 +128,6 @@ function LearningScreen() {
     setLetterKey((k) => k + 1);
   };
 
-  const handlePrev = () => {
-    if (letterIndex > 0) navigateTo(letterIndex - 1);
-  };
-
-  const handleNext = () => {
-    if (letterIndex < LETTERS.length - 1) navigateTo(letterIndex + 1);
-  };
-
   const handleLetterComplete = () => {
     if (letterIndex < LETTERS.length - 1) {
       setTimeout(() => navigateTo(letterIndex + 1), 600);
@@ -144,12 +136,7 @@ function LearningScreen() {
 
   const letterData = LETTERS[letterIndex];
 
-  // Swipe detection is scoped ONLY to the header strip — not the SVG game area.
-  // Attaching swipe to the full container would conflict with horizontal tracing
-  // gestures (e.g., the A crossbar stroke), causing accidental letter navigation.
-  const swipeTouchRef = useRef<{ x: number; y: number } | null>(null);
-
-  // Scrollable letter dot strip — keep active dot centred
+  // Scrollable letter strip — keep active letter centred
   const dotsRef = useRef<HTMLDivElement>(null);
   const activeDotRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -160,136 +147,74 @@ function LearningScreen() {
     strip.scrollTo({ left: targetScroll, behavior: 'smooth' });
   }, [letterIndex]);
 
-  const onHeaderTouchStart = (e: React.TouchEvent) => {
-    swipeTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  };
-
-  const onHeaderTouchEnd = (e: React.TouchEvent) => {
-    if (!swipeTouchRef.current) return;
-    const dx = e.changedTouches[0].clientX - swipeTouchRef.current.x;
-    const dy = e.changedTouches[0].clientY - swipeTouchRef.current.y;
-    swipeTouchRef.current = null;
-    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2.5) {
-      if (dx > 0) handlePrev();
-      else handleNext();
-    }
-  };
-
   return (
     <div
       className="w-full h-full flex flex-col"
       style={{ background: 'linear-gradient(160deg, #0a0a1f 0%, #1a0510 60%, #0d0d2a 100%)' }}
     >
-      {/* Header — swipe left/right here to switch letters (safe zone: no tracing gestures) */}
-      <div
-        className="flex items-center gap-3 px-3 pt-3 pb-1 shrink-0"
-        onTouchStart={onHeaderTouchStart}
-        onTouchEnd={onHeaderTouchEnd}
-      >
-        {/* Prev button — 64×64 for toddler touch target */}
-        <button
-          onClick={handlePrev}
-          disabled={letterIndex === 0}
-          className="flex items-center justify-center rounded-full font-black text-black shrink-0"
-          style={{
-            width: 64,
-            height: 64,
-            fontSize: '1.7rem',
-            background:
-              letterIndex === 0
-                ? 'rgba(255,255,255,0.08)'
-                : 'linear-gradient(135deg, #FFD700, #FF9800)',
-            color: letterIndex === 0 ? 'rgba(255,255,255,0.3)' : '#000',
-            border: '2px solid rgba(255,255,255,0.1)',
-          }}
-          aria-label="Previous letter"
-        >
-          ‹
-        </button>
-
-        {/* Letter display */}
-        <div className="flex-1 text-center">
-          <div className="flex items-center justify-center gap-3">
-            <span
-              className="font-black leading-none"
-              style={{
-                fontSize: 'clamp(3rem, 10vw, 5rem)',
-                color: '#FFD700',
-                textShadow: '0 3px 0 #7a5c00, 0 6px 18px rgba(255,215,0,0.35)',
-                fontFamily: 'Arial Black, Arial, sans-serif',
-              }}
-            >
-              {letterData.letter}
-            </span>
-            <span
-              className="font-semibold"
-              style={{
-                color: 'rgba(255,255,255,0.65)',
-                fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
-              }}
-            >
-              is for {letterData.wordHint}
-            </span>
-          </div>
-          {/* Letter indicator dots — scrollable strip */}
-          <div
-            ref={dotsRef}
-            className="flex gap-1 mt-1 overflow-x-auto"
+      {/* Header */}
+      <div className="px-3 pt-3 pb-1 shrink-0">
+        {/* Current letter display */}
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <span
+            className="font-black leading-none"
             style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              WebkitOverflowScrolling: 'touch',
-              paddingLeft: 4,
-              paddingRight: 4,
+              fontSize: 'clamp(2.5rem, 8vw, 4rem)',
+              color: '#FFD700',
+              textShadow: '0 3px 0 #7a5c00, 0 6px 18px rgba(255,215,0,0.35)',
+              fontFamily: 'Arial Black, Arial, sans-serif',
             }}
           >
-            {LETTERS.map((l, i) => (
-              <button
-                key={l.letter}
-                ref={i === letterIndex ? activeDotRef : undefined}
-                onClick={() => navigateTo(i)}
-                className="rounded-full font-bold transition-all shrink-0"
-                style={{
-                  width: 28,
-                  height: 28,
-                  background:
-                    i === letterIndex
-                      ? '#E8002D'
-                      : i < letterIndex
-                        ? 'rgba(255,215,0,0.4)'
-                        : 'rgba(255,255,255,0.12)',
-                  color: i === letterIndex ? 'white' : 'rgba(255,255,255,0.5)',
-                  border: '1.5px solid rgba(255,255,255,0.15)',
-                  fontSize: '0.7rem',
-                }}
-              >
-                {l.letter}
-              </button>
-            ))}
-          </div>
+            {letterData.letter}
+          </span>
+          <span
+            className="font-semibold"
+            style={{
+              color: 'rgba(255,255,255,0.65)',
+              fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
+            }}
+          >
+            is for {letterData.wordHint}
+          </span>
         </div>
 
-        {/* Next button — 64×64 for toddler touch target */}
-        <button
-          onClick={handleNext}
-          disabled={letterIndex === LETTERS.length - 1}
-          className="flex items-center justify-center rounded-full font-black shrink-0"
+        {/* Full-width scrollable letter strip */}
+        <div
+          ref={dotsRef}
+          className="flex gap-1 overflow-x-auto w-full"
           style={{
-            width: 64,
-            height: 64,
-            fontSize: '1.7rem',
-            background:
-              letterIndex === LETTERS.length - 1
-                ? 'rgba(255,255,255,0.08)'
-                : 'linear-gradient(135deg, #FFD700, #FF9800)',
-            color:
-              letterIndex === LETTERS.length - 1 ? 'rgba(255,255,255,0.3)' : '#000',
-            border: '2px solid rgba(255,255,255,0.1)',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+            WebkitOverflowScrolling: 'touch',
+            paddingLeft: 4,
+            paddingRight: 4,
+            paddingBottom: 2,
           }}
-          aria-label="Next letter"
         >
-          ›
-        </button>
+          {LETTERS.map((l, i) => (
+            <button
+              key={l.letter}
+              ref={i === letterIndex ? activeDotRef : undefined}
+              onClick={() => navigateTo(i)}
+              className="rounded-full font-bold transition-all shrink-0"
+              style={{
+                width: 32,
+                height: 32,
+                background:
+                  i === letterIndex
+                    ? '#E8002D'
+                    : i < letterIndex
+                      ? 'rgba(255,215,0,0.4)'
+                      : 'rgba(255,255,255,0.12)',
+                color: i === letterIndex ? 'white' : 'rgba(255,255,255,0.5)',
+                border: '1.5px solid rgba(255,255,255,0.15)',
+                fontSize: '0.75rem',
+              }}
+            >
+              {l.letter}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Game area — full-width SVG, no touch/swipe navigation here */}
