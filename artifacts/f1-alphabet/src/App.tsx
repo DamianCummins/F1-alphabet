@@ -34,7 +34,6 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
               top: `${30 + i * 20}%`,
               animation: `racingCar ${1.8 + i * 0.5}s ${i * 0.6}s linear infinite`,
               fontSize: '2rem',
-            transform: 'scaleX(-1)',
             }}
           >
             🏎️
