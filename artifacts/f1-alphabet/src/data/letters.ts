@@ -415,7 +415,7 @@ export const LETTERS: LetterData[] = [
     wordHint: 'Speed',
     strokes: [
       {
-        path: 'M 155 55 C 155 22 45 22 45 125 C 45 228 155 228 155 195',
+        path: 'M 155 55 C 155 22 45 22 45 108 C 45 125 155 125 155 142 C 155 228 45 228 45 195',
         startX: 155,
         startY: 55,
         label: 'S-curve',
