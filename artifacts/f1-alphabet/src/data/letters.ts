@@ -615,7 +615,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     strokes: [
       {
         // Entry flick Q curves into top of circle; oval uses same control points as o (x=45/155)
-        path: 'M 148 125 Q 155 118 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
+        path: 'M 148 125 Q 155 118 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
         startX: 148,
         startY: 125,
         label: 'Round',
@@ -645,7 +645,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
       {
         // Right-side oval: mirrors d's circle, uses x=155 control points like o
-        path: 'M 55 128 C 55 110 155 110 155 160 C 155 210 55 210 55 192',
+        path: 'M 55 128 C 55 110 145 110 145 160 C 145 210 55 210 55 192',
         startX: 55,
         startY: 128,
         label: 'Bump',
@@ -660,7 +660,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Car',
     strokes: [
       {
-        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
         startX: 145,
         startY: 128,
         label: 'Arc',
@@ -675,8 +675,8 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Driver',
     strokes: [
       {
-        // Left-side oval: same control points as o (x=45), symmetric with b's bump
-        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
+        // Left-side oval: symmetric with b's bump
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
         startX: 145,
         startY: 128,
         label: 'Circle',
@@ -736,7 +736,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Gear',
     strokes: [
       {
-        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
         startX: 145,
         startY: 128,
         label: 'Circle',
@@ -933,7 +933,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
       {
         // Right-side oval: same geometry as b's bump (x=155 control points)
-        path: 'M 55 128 C 55 110 155 110 155 160 C 155 210 55 210 55 192',
+        path: 'M 55 128 C 55 110 145 110 145 160 C 145 210 55 210 55 192',
         startX: 55,
         startY: 128,
         label: 'Bump',
@@ -949,7 +949,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     strokes: [
       {
         // Left-side oval: same geometry as d's circle
-        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
         startX: 145,
         startY: 128,
         label: 'Circle',
