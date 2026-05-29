@@ -219,7 +219,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
   const isStrokeCompleted = (i: number) => i < completedCars.length;
 
   // Split out viewBox numbers to set width/height attrs
-  const [, , vbW, vbH] = letterData.viewBox.split(' ').map(Number);
+  const [vbX, vbY, vbW, vbH] = letterData.viewBox.split(' ').map(Number);
 
   return (
     <div className="relative w-full h-full flex flex-col" style={{ minHeight: 0 }}>
@@ -285,7 +285,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
           </defs>
 
           {/* Grass background */}
-          <rect x="0" y="0" width={vbW} height={vbH} fill="#22c55e" />
+          <rect x={vbX} y={vbY} width={vbW} height={vbH} fill="#22c55e" />
 
           {/*
            * Track rendering — grouped BY LAYER, not by stroke.
