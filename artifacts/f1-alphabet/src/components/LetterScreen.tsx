@@ -78,6 +78,13 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
 
   // Init car position & angle from DOM path on stroke change
   useEffect(() => {
+    const stroke = letterData.strokes[currentStrokeIdx];
+    if (stroke?.type === 'tap') {
+      setCarVisible(false);
+      setCarLength(0);
+      currentStrokeIdxRef.current = currentStrokeIdx;
+      return;
+    }
     const path = pathRefs.current[currentStrokeIdx];
     if (!path) return;
     const pt = path.getPointAtLength(0);
@@ -88,7 +95,7 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
     setCarVisible(true);
     setIsIdle(true);
     currentStrokeIdxRef.current = currentStrokeIdx;
-  }, [currentStrokeIdx]);
+  }, [currentStrokeIdx, letterData.strokes]);
 
   const resetIdleTimer = useCallback(() => {
     setIsIdle(false);
@@ -140,6 +147,34 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
     }
   }, [letterData.strokes.length]);
 
+  const completeTapStroke = useCallback(() => {
+    if (isCompletingRef.current) return;
+    isCompletingRef.current = true;
+    const idx = currentStrokeIdxRef.current;
+    const stroke = letterData.strokes[idx];
+    const endPt = { x: stroke.startX, y: stroke.startY };
+    const isLastStroke = idx >= letterData.strokes.length - 1;
+    if (isLastStroke) {
+      setTimeout(() => {
+        setCompletedCars((prev) => [...prev, { x: endPt.x, y: endPt.y, angle: 0 }]);
+        setTimeout(() => {
+          setShowCelebration(true);
+          isCompletingRef.current = false;
+        }, 300);
+      }, 200);
+    } else {
+      setTimeout(() => {
+        setCompletedCars((prev) => [...prev, { x: endPt.x, y: endPt.y, angle: 0 }]);
+        setTimeout(() => {
+          const nextIdx = idx + 1;
+          currentStrokeIdxRef.current = nextIdx;
+          setCurrentStrokeIdx(nextIdx);
+          isCompletingRef.current = false;
+        }, 350);
+      }, 200);
+    }
+  }, [letterData.strokes]);
+
   const handlePointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
     if (isCompletingRef.current || showCelebration) return;
     e.preventDefault();
@@ -147,8 +182,15 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
     const svg = svgRef.current;
     if (!svg) return;
     const svgPt = screenToSVG(svg, e.clientX, e.clientY);
-    const dist = Math.hypot(svgPt.x - carPos.x, svgPt.y - carPos.y);
 
+    const currentStroke = letterData.strokes[currentStrokeIdxRef.current];
+    if (currentStroke?.type === 'tap') {
+      const dist = Math.hypot(svgPt.x - currentStroke.startX, svgPt.y - currentStroke.startY);
+      if (dist <= 35) completeTapStroke();
+      return;
+    }
+
+    const dist = Math.hypot(svgPt.x - carPos.x, svgPt.y - carPos.y);
     if (dist <= SNAP_RADIUS) {
       isDraggingRef.current = true;
       svg.setPointerCapture(e.pointerId);
@@ -294,74 +336,94 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
            */}
 
           {/* Layer 1 — Grass edge (all strokes) */}
-          {letterData.strokes.map((stroke, i) => (
-            <path
-              key={`grass-${i}`}
-              d={stroke.path}
-              stroke="#16a34a"
-              strokeWidth={GRASS_W}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-          ))}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type === 'tap' ? null : (
+              <path
+                key={`grass-${i}`}
+                d={stroke.path}
+                stroke="#16a34a"
+                strokeWidth={GRASS_W}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            )
+          )}
           {/* Junction circles — grass layer */}
           {findJunctionPoints(letterData.strokes).map((pt, i) => (
             <circle key={`junc-grass-${i}`} cx={pt.x} cy={pt.y} r={GRASS_W / 2} fill="#16a34a" />
           ))}
 
           {/* Layer 2 — White kerb stripe (all strokes) */}
-          {letterData.strokes.map((stroke, i) => (
-            <path
-              key={`kerb-w-${i}`}
-              d={stroke.path}
-              stroke="white"
-              strokeWidth={KERB_W}
-              strokeLinecap="butt"
-              strokeLinejoin="round"
-              strokeDasharray="11 11"
-              fill="none"
-            />
-          ))}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type === 'tap' ? null : (
+              <path
+                key={`kerb-w-${i}`}
+                d={stroke.path}
+                stroke="white"
+                strokeWidth={KERB_W}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                strokeDasharray="11 11"
+                fill="none"
+              />
+            )
+          )}
           {/* Junction circles — kerb layer (solid white base, road covers centre) */}
           {findJunctionPoints(letterData.strokes).map((pt, i) => (
             <circle key={`junc-kerb-${i}`} cx={pt.x} cy={pt.y} r={KERB_W / 2} fill="white" />
           ))}
 
           {/* Layer 3 — Red kerb stripe (all strokes) */}
-          {letterData.strokes.map((stroke, i) => (
-            <path
-              key={`kerb-r-${i}`}
-              d={stroke.path}
-              stroke="#dc2626"
-              strokeWidth={KERB_W}
-              strokeLinecap="butt"
-              strokeLinejoin="round"
-              strokeDasharray="11 11"
-              strokeDashoffset="11"
-              fill="none"
-            />
-          ))}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type === 'tap' ? null : (
+              <path
+                key={`kerb-r-${i}`}
+                d={stroke.path}
+                stroke="#dc2626"
+                strokeWidth={KERB_W}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                strokeDasharray="11 11"
+                strokeDashoffset="11"
+                fill="none"
+              />
+            )
+          )}
 
           {/* Layer 4 — Road surface (all strokes) — round caps for smooth stroke ends */}
-          {letterData.strokes.map((stroke, i) => (
-            <path
-              key={`road-${i}`}
-              d={stroke.path}
-              stroke="#2d3748"
-              strokeWidth={ROAD_W}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-          ))}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type === 'tap' ? null : (
+              <path
+                key={`road-${i}`}
+                d={stroke.path}
+                stroke="#2d3748"
+                strokeWidth={ROAD_W}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            )
+          )}
           {/* Junction circles — road layer (covers kerb/grass sharp edges at joins) */}
           {findJunctionPoints(letterData.strokes).map((pt, i) => (
             <circle key={`junc-road-${i}`} cx={pt.x} cy={pt.y} r={ROAD_W / 2} fill="#2d3748" />
           ))}
 
+          {/* Stamped dot — appears when a tap stroke is completed */}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type !== 'tap' || !isStrokeCompleted(i) ? null : (
+              <g key={`stamp-${i}`}>
+                <circle cx={stroke.startX} cy={stroke.startY} r={20} fill="#2d3748" />
+                <circle cx={stroke.startX} cy={stroke.startY} r={10} fill="#4a5568" />
+                <circle cx={stroke.startX} cy={stroke.startY} r={4} fill="#718096" />
+              </g>
+            )
+          )}
+
           {/* Layer 5 — White progress trail (completed strokes = full; active stroke = driven portion) */}
           {letterData.strokes.map((stroke, i) => {
+            if (stroke.type === 'tap') return null;
             if (isStrokeCompleted(i)) {
               return (
                 <path
@@ -396,18 +458,20 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
           })}
 
           {/* Layer 6 — Road centre dashes (all strokes) */}
-          {letterData.strokes.map((stroke, i) => (
-            <path
-              key={`centre-${i}`}
-              d={stroke.path}
-              stroke="#8fa3b3"
-              strokeWidth={2.5}
-              strokeLinecap="butt"
-              strokeLinejoin="round"
-              strokeDasharray="9 7"
-              fill="none"
-            />
-          ))}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type === 'tap' ? null : (
+              <path
+                key={`centre-${i}`}
+                d={stroke.path}
+                stroke="#8fa3b3"
+                strokeWidth={2.5}
+                strokeLinecap="butt"
+                strokeLinejoin="round"
+                strokeDasharray="9 7"
+                fill="none"
+              />
+            )
+          )}
 
           {/* Layer 7 — Finish line at end of the active stroke only */}
           {letterData.strokes.map((_, i) => {
@@ -433,21 +497,24 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
           })}
 
           {/* Layer 8 — Hidden math paths for getPointAtLength (must stay per-stroke with refs) */}
-          {letterData.strokes.map((stroke, i) => (
-            <path
-              key={`math-${i}`}
-              d={stroke.path}
-              stroke="transparent"
-              strokeWidth={1}
-              fill="none"
-              ref={(el) => {
-                pathRefs.current[i] = el;
-              }}
-            />
-          ))}
+          {letterData.strokes.map((stroke, i) =>
+            stroke.type === 'tap' ? null : (
+              <path
+                key={`math-${i}`}
+                d={stroke.path}
+                stroke="transparent"
+                strokeWidth={1}
+                fill="none"
+                ref={(el) => {
+                  pathRefs.current[i] = el;
+                }}
+              />
+            )
+          )}
 
-          {/* Active draggable car */}
-          {carVisible && !showCelebration && (
+          {/* Active draggable car — hidden during tap strokes */}
+          {carVisible && !showCelebration &&
+            letterData.strokes[currentStrokeIdx]?.type !== 'tap' && (
             <g filter="url(#carShadow)">
               <F1Car
                 x={carPos.x}
@@ -457,6 +524,63 @@ export default function LetterScreen({ letterData, isLast, onLetterComplete }: L
               />
             </g>
           )}
+
+          {/* Tyre tap target — shown when current stroke is a tap type and not yet completed */}
+          {!showCelebration && (() => {
+            const stroke = letterData.strokes[currentStrokeIdx];
+            if (!stroke || stroke.type !== 'tap' || isStrokeCompleted(currentStrokeIdx)) return null;
+            const cx = stroke.startX;
+            const cy = stroke.startY;
+            return (
+              <g key="tyre-tap" style={{ cursor: 'pointer' }}>
+                {/* Pulsing halo */}
+                <circle cx={cx} cy={cy} fill="none" stroke="#4ade80" strokeWidth="4" r="32">
+                  <animate attributeName="r" values="28;42;28" dur="1.1s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.7;0;0.7" dur="1.1s" repeatCount="indefinite" />
+                </circle>
+                {/* Tyre body — scale-pulsed from its own centre */}
+                <g transform={`translate(${cx},${cy})`}>
+                  <g>
+                    <animateTransform
+                      attributeName="transform"
+                      type="scale"
+                      values="1;1.12;1"
+                      dur="0.85s"
+                      repeatCount="indefinite"
+                    />
+                    <circle r="23" fill="#1c1c1c" />
+                    <circle r="21" fill="none" stroke="#333" strokeWidth="3" />
+                    <circle r="15" fill="#7a8fa6" />
+                    <circle r="13" fill="none" stroke="#aabfcf" strokeWidth="1.5" />
+                    {([0, 72, 144, 216, 288] as number[]).map((deg) => {
+                      const rad = ((deg - 90) * Math.PI) / 180;
+                      return (
+                        <line
+                          key={deg}
+                          x1={Math.cos(rad) * 5} y1={Math.sin(rad) * 5}
+                          x2={Math.cos(rad) * 13} y2={Math.sin(rad) * 13}
+                          stroke="#556677" strokeWidth="2.5" strokeLinecap="round"
+                        />
+                      );
+                    })}
+                    <circle r="4" fill="#ccd6e0" />
+                  </g>
+                </g>
+                {/* TAP label */}
+                <text
+                  x={cx} y={cy + 40}
+                  textAnchor="middle"
+                  fontSize="12"
+                  fontWeight="bold"
+                  fill="white"
+                  opacity="0.85"
+                  style={{ pointerEvents: 'none' }}
+                >
+                  TAP!
+                </text>
+              </g>
+            );
+          })()}
         </svg>
       </div>
 

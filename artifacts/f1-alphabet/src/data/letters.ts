@@ -3,6 +3,7 @@ export interface Stroke {
   startX: number;
   startY: number;
   label: string;
+  type?: 'tap';
 }
 
 export interface LetterData {
@@ -783,10 +784,10 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Down stroke',
       },
       {
-        // Dot as a small circle (two cubic half-arcs)
-        path: 'M 100 57 C 110 57 110 73 100 73 C 90 73 90 57 100 57',
+        type: 'tap' as const,
+        path: '',
         startX: 100,
-        startY: 57,
+        startY: 65,
         label: 'Dot',
       },
     ],
@@ -805,9 +806,10 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Hook',
       },
       {
-        path: 'M 100 57 C 110 57 110 73 100 73 C 90 73 90 57 100 57',
+        type: 'tap' as const,
+        path: '',
         startX: 100,
-        startY: 57,
+        startY: 65,
         label: 'Dot',
       },
     ],
