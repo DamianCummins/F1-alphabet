@@ -582,56 +582,81 @@ export const LETTERS: LetterData[] = [
 ];
 
 /*
- * Lowercase letter tracks — viewBox 0 0 200 300
- * Coordinate zones:
+ * Lowercase letter tracks
+ *
+ * Shared coordinate space (all letters use these absolute positions):
  *   Ascender top  : y = 20
  *   x-height top  : y = 110
  *   Baseline      : y = 210
- *   Descender btm : y = 275
- * Stroke order follows standard print handwriting formation.
+ *   Descender btm : y = 278
+ *   x-center: 100, left stem: 55, right stem: 145
+ *
+ * Each letter uses a tight viewBox cropped to its content so that
+ * the letter always appears centred in the game area regardless of
+ * whether it has ascenders or descenders.
+ *
+ *   x-height only  → viewBox '0 90 200 140'   (y 90–230)
+ *   ascender       → viewBox '0 0 200 230'    (y 0–230)
+ *   short ascender → viewBox '0 25 200 205'   (y 25–230)
+ *   descender      → viewBox '0 90 200 205'   (y 90–295)
+ *   i (dot+body)   → viewBox '0 40 200 185'   (y 40–225)
+ *   j (dot+hook)   → viewBox '0 40 200 255'   (y 40–295)
+ *
+ * Stroke order follows standard print-handwriting formation.
+ * Entry/exit flicks (↩ tails) are encoded as short Q/C curves on
+ * the relevant strokes: a, b, d, l, t, u.
  */
 export const LOWERCASE_LETTERS: LetterData[] = [
+  // ── a ── x-height; circle first (counterclockwise from ~1 o'clock), then down stroke with exit flick
   {
     letter: 'a',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Apple',
     strokes: [
       {
-        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
-        startX: 145,
-        startY: 135,
+        // Entry flick Q curves into the top of the circle, then the full oval
+        path: 'M 148 125 Q 155 118 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        startX: 148,
+        startY: 125,
         label: 'Round',
       },
       {
-        path: 'M 145 135 L 145 210',
+        // Down stroke from top of circle to baseline with a small exit flick right
+        path: 'M 145 135 L 145 207 Q 148 218 157 214',
         startX: 145,
         startY: 135,
         label: 'Down stroke',
       },
     ],
   },
+
+  // ── b ── ascender; tall stroke with entry flick, then bump (mirror of d's circle)
   {
     letter: 'b',
-    viewBox: '0 0 200 300',
+    viewBox: '0 0 200 230',
     wordHint: 'Ball',
     strokes: [
       {
-        path: 'M 55 20 L 55 210',
-        startX: 55,
-        startY: 20,
+        // Entry flick at top before the long downstroke
+        path: 'M 60 24 Q 50 16 55 28 L 55 210',
+        startX: 60,
+        startY: 24,
         label: 'Tall stroke',
       },
       {
-        path: 'M 55 110 C 145 110 145 210 55 210',
+        // Two-segment bezier matching d's circle, mirrored horizontally
+        path: 'M 55 135 C 55 110 145 110 145 160 C 145 210 55 210 55 185',
         startX: 55,
-        startY: 110,
+        startY: 135,
         label: 'Bump',
       },
     ],
   },
+
+  // ── c ── x-height; open arc from ~2 o'clock counterclockwise to ~4 o'clock
   {
     letter: 'c',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Car',
     strokes: [
       {
@@ -642,41 +667,51 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── d ── ascender; circle first (same geometry as c/o), then tall stroke with exit flick
   {
     letter: 'd',
-    viewBox: '0 0 200 300',
+    viewBox: '0 0 200 230',
     wordHint: 'Driver',
     strokes: [
       {
-        path: 'M 140 135 C 140 110 60 110 60 160 C 60 210 140 210 140 185',
-        startX: 140,
+        // Circle: two-segment bezier, symmetric with b's bump
+        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        startX: 145,
         startY: 135,
         label: 'Circle',
       },
       {
-        path: 'M 145 20 L 145 210',
+        // Tall stroke down with exit flick at baseline
+        path: 'M 145 20 L 145 207 Q 148 218 157 214',
         startX: 145,
         startY: 20,
         label: 'Tall stroke',
       },
     ],
   },
+
+  // ── e ── x-height; start at left-of-centre midline, drive RIGHT along crossbar,
+  //         then arc UP counterclockwise over the top, down the left, under the bottom,
+  //         ending lower-right — mouth of the e faces RIGHT
   {
     letter: 'e',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Engine',
     strokes: [
       {
-        path: 'M 140 160 L 60 160 C 58 110 145 110 145 165 C 145 210 60 210 63 190',
-        startX: 140,
+        path: 'M 63 160 L 145 160 C 145 110 60 110 60 160 C 60 210 145 210 145 185',
+        startX: 63,
         startY: 160,
         label: 'Loop',
       },
     ],
   },
+
+  // ── f ── ascender; hook curves left at top then long stem down, then crossbar
   {
     letter: 'f',
-    viewBox: '0 0 200 300',
+    viewBox: '0 0 200 230',
     wordHint: 'Flag',
     strokes: [
       {
@@ -693,9 +728,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── g ── descender; circle first, then down stroke curling left at bottom
   {
     letter: 'g',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 205',
     wordHint: 'Gear',
     strokes: [
       {
@@ -705,16 +742,18 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Circle',
       },
       {
-        path: 'M 145 135 L 145 258 C 145 275 55 275 55 258',
+        path: 'M 145 135 L 145 260 C 145 278 55 278 55 260',
         startX: 145,
         startY: 135,
         label: 'Descender',
       },
     ],
   },
+
+  // ── h ── ascender; tall down stroke, then arch right and down
   {
     letter: 'h',
-    viewBox: '0 0 200 300',
+    viewBox: '0 0 200 230',
     wordHint: 'Helmet',
     strokes: [
       {
@@ -731,9 +770,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── i ── body stroke first, dot last; tight viewBox includes dot zone
   {
     letter: 'i',
-    viewBox: '0 0 200 300',
+    viewBox: '0 40 200 185',
     wordHint: 'Italian',
     strokes: [
       {
@@ -743,6 +784,7 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Down stroke',
       },
       {
+        // Dot as a small circle (two cubic half-arcs)
         path: 'M 100 57 C 110 57 110 73 100 73 C 90 73 90 57 100 57',
         startX: 100,
         startY: 57,
@@ -750,13 +792,15 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── j ── hook stroke first, dot last
   {
     letter: 'j',
-    viewBox: '0 0 200 300',
+    viewBox: '0 40 200 255',
     wordHint: 'Jump',
     strokes: [
       {
-        path: 'M 100 110 L 100 258 C 100 275 60 275 55 258',
+        path: 'M 100 110 L 100 260 C 100 278 60 278 55 260',
         startX: 100,
         startY: 110,
         label: 'Hook',
@@ -769,9 +813,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── k ── ascender; tall stroke, kick in toward stem, kick out away from stem
   {
     letter: 'k',
-    viewBox: '0 0 200 300',
+    viewBox: '0 0 200 230',
     wordHint: 'Kart',
     strokes: [
       {
@@ -794,22 +840,26 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── l ── ascender; single tall stroke with exit flick at baseline
   {
     letter: 'l',
-    viewBox: '0 0 200 300',
+    viewBox: '0 0 200 230',
     wordHint: 'Lap',
     strokes: [
       {
-        path: 'M 100 20 L 100 210',
+        path: 'M 100 20 L 100 207 Q 103 218 112 214',
         startX: 100,
         startY: 20,
         label: 'Tall stroke',
       },
     ],
   },
+
+  // ── m ── x-height; down, first arch-and-down, second arch-and-down
   {
     letter: 'm',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Monaco',
     strokes: [
       {
@@ -832,9 +882,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── n ── x-height; down stroke, then arch-and-down
   {
     letter: 'n',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Nitro',
     strokes: [
       {
@@ -851,9 +903,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── o ── x-height; single counterclockwise circle
   {
     letter: 'o',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Oval',
     strokes: [
       {
@@ -864,28 +918,33 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── p ── descender; long down stroke first (below baseline), then bump right
   {
     letter: 'p',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 205',
     wordHint: 'Podium',
     strokes: [
       {
-        path: 'M 55 110 L 55 275',
+        path: 'M 55 110 L 55 278',
         startX: 55,
         startY: 110,
         label: 'Down stroke',
       },
       {
-        path: 'M 55 110 C 145 110 145 210 55 210',
+        // Bump: same two-segment geometry as b's bump (and d's circle)
+        path: 'M 55 135 C 55 110 145 110 145 160 C 145 210 55 210 55 185',
         startX: 55,
-        startY: 110,
+        startY: 135,
         label: 'Bump',
       },
     ],
   },
+
+  // ── q ── descender; circle first (same as c), then long down stroke
   {
     letter: 'q',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 205',
     wordHint: 'Qualify',
     strokes: [
       {
@@ -895,16 +954,18 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Circle',
       },
       {
-        path: 'M 145 135 L 145 275',
+        path: 'M 145 135 L 145 278',
         startX: 145,
         startY: 135,
         label: 'Down stroke',
       },
     ],
   },
+
+  // ── r ── x-height; down stroke, then short shoulder curving right
   {
     letter: 'r',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Race',
     strokes: [
       {
@@ -921,26 +982,32 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── s ── x-height; three-segment bezier creating a true S crossover
+  //         start upper-right → upper arc CCW to left → crossover CW to right → lower arc CCW to lower-left
   {
     letter: 's',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Speed',
     strokes: [
       {
-        path: 'M 140 130 C 140 110 60 110 60 155 C 60 210 140 210 140 190',
+        path: 'M 140 130 C 140 110 60 110 60 150 C 60 168 140 152 140 172 C 140 210 60 210 60 192',
         startX: 140,
         startY: 130,
         label: 'S curve',
       },
     ],
   },
+
+  // ── t ── short ascender; stem (short top, long down with exit flick), then crossbar
   {
     letter: 't',
-    viewBox: '0 0 200 300',
+    viewBox: '0 25 200 205',
     wordHint: 'Track',
     strokes: [
       {
-        path: 'M 100 45 L 100 210',
+        // Stem starts well above x-height (short ascender) with exit flick at base
+        path: 'M 100 45 L 100 207 Q 103 218 112 214',
         startX: 100,
         startY: 45,
         label: 'Down stroke',
@@ -953,9 +1020,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── u ── x-height; curve down-across-up, then up stroke with exit flick at top
   {
     letter: 'u',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Undercut',
     strokes: [
       {
@@ -965,16 +1034,19 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Curve',
       },
       {
-        path: 'M 145 182 L 145 110',
+        // Up stroke with a small rightward exit flick at the top
+        path: 'M 145 182 L 145 113 Q 149 107 156 110',
         startX: 145,
         startY: 182,
         label: 'Up stroke',
       },
     ],
   },
+
+  // ── v ── x-height; left diagonal down, right diagonal up
   {
     letter: 'v',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Victory',
     strokes: [
       {
@@ -991,9 +1063,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── w ── x-height; four diagonals forming two v-shapes
   {
     letter: 'w',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Wheel',
     strokes: [
       {
@@ -1022,9 +1096,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── x ── x-height; two crossing diagonals
   {
     letter: 'x',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'eXtra',
     strokes: [
       {
@@ -1041,9 +1117,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
       },
     ],
   },
+
+  // ── y ── descender; left arm to V-point, then right arm continuing into descender
   {
     letter: 'y',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 205',
     wordHint: 'Yellow flag',
     strokes: [
       {
@@ -1053,16 +1131,18 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Left arm',
       },
       {
-        path: 'M 145 110 L 100 178 L 65 275',
+        path: 'M 145 110 L 100 178 L 65 278',
         startX: 145,
         startY: 110,
         label: 'Right arm and tail',
       },
     ],
   },
+
+  // ── z ── x-height; top bar, diagonal, bottom bar
   {
     letter: 'z',
-    viewBox: '0 0 200 300',
+    viewBox: '0 90 200 140',
     wordHint: 'Zoom',
     strokes: [
       {
