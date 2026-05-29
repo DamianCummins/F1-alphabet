@@ -614,14 +614,14 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Apple',
     strokes: [
       {
-        // Entry flick Q curves into top of circle; oval uses same control points as o (x=45/155)
-        path: 'M 148 125 Q 155 118 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
-        startX: 148,
-        startY: 125,
+        // Closed oval: start at top-right (~2 o'clock), counterclockwise all the way around, return to start
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 232 145 232 145 128',
+        startX: 145,
+        startY: 128,
         label: 'Round',
       },
       {
-        // Down stroke from top junction to baseline with exit flick right
+        // Down stroke from top-right junction to baseline with exit flick right
         path: 'M 145 128 L 145 207 Q 148 218 157 214',
         startX: 145,
         startY: 128,
@@ -675,17 +675,17 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Driver',
     strokes: [
       {
-        // Left-side oval: symmetric with b's bump
-        path: 'M 145 128 C 145 110 55 110 55 160 C 55 210 145 210 145 192',
+        // Closed oval: same as 'a', counterclockwise from top-right all the way back to top-right
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 232 145 232 145 128',
         startX: 145,
         startY: 128,
         label: 'Circle',
       },
       {
-        // Tall stroke down with exit flick at baseline
-        path: 'M 145 20 L 145 207 Q 148 218 157 214',
+        // Tall stroke: from oval top-right, drive UP to ascender, hairpin, back DOWN with exit flick
+        path: 'M 145 128 L 145 20 L 145 207 Q 148 218 157 214',
         startX: 145,
-        startY: 20,
+        startY: 128,
         label: 'Tall stroke',
       },
     ],
