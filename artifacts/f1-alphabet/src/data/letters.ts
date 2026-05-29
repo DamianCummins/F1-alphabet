@@ -675,18 +675,18 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Driver',
     strokes: [
       {
-        // Closed oval: same as 'a', counterclockwise from top-right all the way back to top-right
-        path: 'M 145 128 C 145 110 55 110 55 160 C 55 232 145 232 145 128',
+        // Closed oval then continue straight up to ascender top — one continuous stroke
+        path: 'M 145 128 C 145 110 55 110 55 160 C 55 232 145 232 145 128 L 145 20',
         startX: 145,
         startY: 128,
-        label: 'Circle',
+        label: 'Circle & up',
       },
       {
-        // Tall stroke: from oval top-right, drive UP to ascender, hairpin, back DOWN with exit flick
-        path: 'M 145 128 L 145 20 L 145 207 Q 148 218 157 214',
+        // Down stroke from ascender top to baseline with exit flick
+        path: 'M 145 20 L 145 207 Q 148 218 157 214',
         startX: 145,
-        startY: 128,
-        label: 'Tall stroke',
+        startY: 20,
+        label: 'Down stroke',
       },
     ],
   },
