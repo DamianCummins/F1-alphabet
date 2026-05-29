@@ -580,3 +580,509 @@ export const LETTERS: LetterData[] = [
     ],
   },
 ];
+
+/*
+ * Lowercase letter tracks — viewBox 0 0 200 300
+ * Coordinate zones:
+ *   Ascender top  : y = 20
+ *   x-height top  : y = 110
+ *   Baseline      : y = 210
+ *   Descender btm : y = 275
+ * Stroke order follows standard print handwriting formation.
+ */
+export const LOWERCASE_LETTERS: LetterData[] = [
+  {
+    letter: 'a',
+    viewBox: '0 0 200 300',
+    wordHint: 'Apple',
+    strokes: [
+      {
+        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        startX: 145,
+        startY: 135,
+        label: 'Round',
+      },
+      {
+        path: 'M 145 135 L 145 210',
+        startX: 145,
+        startY: 135,
+        label: 'Down stroke',
+      },
+    ],
+  },
+  {
+    letter: 'b',
+    viewBox: '0 0 200 300',
+    wordHint: 'Ball',
+    strokes: [
+      {
+        path: 'M 55 20 L 55 210',
+        startX: 55,
+        startY: 20,
+        label: 'Tall stroke',
+      },
+      {
+        path: 'M 55 110 C 145 110 145 210 55 210',
+        startX: 55,
+        startY: 110,
+        label: 'Bump',
+      },
+    ],
+  },
+  {
+    letter: 'c',
+    viewBox: '0 0 200 300',
+    wordHint: 'Car',
+    strokes: [
+      {
+        path: 'M 140 130 C 140 110 60 110 60 160 C 60 210 140 210 140 190',
+        startX: 140,
+        startY: 130,
+        label: 'Arc',
+      },
+    ],
+  },
+  {
+    letter: 'd',
+    viewBox: '0 0 200 300',
+    wordHint: 'Driver',
+    strokes: [
+      {
+        path: 'M 140 135 C 140 110 60 110 60 160 C 60 210 140 210 140 185',
+        startX: 140,
+        startY: 135,
+        label: 'Circle',
+      },
+      {
+        path: 'M 145 20 L 145 210',
+        startX: 145,
+        startY: 20,
+        label: 'Tall stroke',
+      },
+    ],
+  },
+  {
+    letter: 'e',
+    viewBox: '0 0 200 300',
+    wordHint: 'Engine',
+    strokes: [
+      {
+        path: 'M 140 160 L 60 160 C 58 110 145 110 145 165 C 145 210 60 210 63 190',
+        startX: 140,
+        startY: 160,
+        label: 'Loop',
+      },
+    ],
+  },
+  {
+    letter: 'f',
+    viewBox: '0 0 200 300',
+    wordHint: 'Flag',
+    strokes: [
+      {
+        path: 'M 148 52 C 148 20 70 20 70 52 L 70 210',
+        startX: 148,
+        startY: 52,
+        label: 'Hook and stem',
+      },
+      {
+        path: 'M 42 138 L 122 138',
+        startX: 42,
+        startY: 138,
+        label: 'Crossbar',
+      },
+    ],
+  },
+  {
+    letter: 'g',
+    viewBox: '0 0 200 300',
+    wordHint: 'Gear',
+    strokes: [
+      {
+        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        startX: 145,
+        startY: 135,
+        label: 'Circle',
+      },
+      {
+        path: 'M 145 135 L 145 258 C 145 275 55 275 55 258',
+        startX: 145,
+        startY: 135,
+        label: 'Descender',
+      },
+    ],
+  },
+  {
+    letter: 'h',
+    viewBox: '0 0 200 300',
+    wordHint: 'Helmet',
+    strokes: [
+      {
+        path: 'M 55 20 L 55 210',
+        startX: 55,
+        startY: 20,
+        label: 'Tall stroke',
+      },
+      {
+        path: 'M 55 140 C 55 110 145 110 145 140 L 145 210',
+        startX: 55,
+        startY: 140,
+        label: 'Arch and down',
+      },
+    ],
+  },
+  {
+    letter: 'i',
+    viewBox: '0 0 200 300',
+    wordHint: 'Italian',
+    strokes: [
+      {
+        path: 'M 100 110 L 100 210',
+        startX: 100,
+        startY: 110,
+        label: 'Down stroke',
+      },
+      {
+        path: 'M 100 57 C 110 57 110 73 100 73 C 90 73 90 57 100 57',
+        startX: 100,
+        startY: 57,
+        label: 'Dot',
+      },
+    ],
+  },
+  {
+    letter: 'j',
+    viewBox: '0 0 200 300',
+    wordHint: 'Jump',
+    strokes: [
+      {
+        path: 'M 100 110 L 100 258 C 100 275 60 275 55 258',
+        startX: 100,
+        startY: 110,
+        label: 'Hook',
+      },
+      {
+        path: 'M 100 57 C 110 57 110 73 100 73 C 90 73 90 57 100 57',
+        startX: 100,
+        startY: 57,
+        label: 'Dot',
+      },
+    ],
+  },
+  {
+    letter: 'k',
+    viewBox: '0 0 200 300',
+    wordHint: 'Kart',
+    strokes: [
+      {
+        path: 'M 55 20 L 55 210',
+        startX: 55,
+        startY: 20,
+        label: 'Tall stroke',
+      },
+      {
+        path: 'M 145 110 L 55 162',
+        startX: 145,
+        startY: 110,
+        label: 'Kick in',
+      },
+      {
+        path: 'M 55 162 L 145 210',
+        startX: 55,
+        startY: 162,
+        label: 'Kick out',
+      },
+    ],
+  },
+  {
+    letter: 'l',
+    viewBox: '0 0 200 300',
+    wordHint: 'Lap',
+    strokes: [
+      {
+        path: 'M 100 20 L 100 210',
+        startX: 100,
+        startY: 20,
+        label: 'Tall stroke',
+      },
+    ],
+  },
+  {
+    letter: 'm',
+    viewBox: '0 0 200 300',
+    wordHint: 'Monaco',
+    strokes: [
+      {
+        path: 'M 40 110 L 40 210',
+        startX: 40,
+        startY: 110,
+        label: 'Down stroke',
+      },
+      {
+        path: 'M 40 132 C 40 110 100 110 100 135 L 100 210',
+        startX: 40,
+        startY: 132,
+        label: 'First arch',
+      },
+      {
+        path: 'M 100 132 C 100 110 160 110 160 135 L 160 210',
+        startX: 100,
+        startY: 132,
+        label: 'Second arch',
+      },
+    ],
+  },
+  {
+    letter: 'n',
+    viewBox: '0 0 200 300',
+    wordHint: 'Nitro',
+    strokes: [
+      {
+        path: 'M 55 110 L 55 210',
+        startX: 55,
+        startY: 110,
+        label: 'Down stroke',
+      },
+      {
+        path: 'M 55 135 C 55 110 145 110 145 140 L 145 210',
+        startX: 55,
+        startY: 135,
+        label: 'Arch and down',
+      },
+    ],
+  },
+  {
+    letter: 'o',
+    viewBox: '0 0 200 300',
+    wordHint: 'Oval',
+    strokes: [
+      {
+        path: 'M 100 110 C 155 110 155 210 100 210 C 45 210 45 110 100 110',
+        startX: 100,
+        startY: 110,
+        label: 'Circle',
+      },
+    ],
+  },
+  {
+    letter: 'p',
+    viewBox: '0 0 200 300',
+    wordHint: 'Podium',
+    strokes: [
+      {
+        path: 'M 55 110 L 55 275',
+        startX: 55,
+        startY: 110,
+        label: 'Down stroke',
+      },
+      {
+        path: 'M 55 110 C 145 110 145 210 55 210',
+        startX: 55,
+        startY: 110,
+        label: 'Bump',
+      },
+    ],
+  },
+  {
+    letter: 'q',
+    viewBox: '0 0 200 300',
+    wordHint: 'Qualify',
+    strokes: [
+      {
+        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        startX: 145,
+        startY: 135,
+        label: 'Circle',
+      },
+      {
+        path: 'M 145 135 L 145 275',
+        startX: 145,
+        startY: 135,
+        label: 'Down stroke',
+      },
+    ],
+  },
+  {
+    letter: 'r',
+    viewBox: '0 0 200 300',
+    wordHint: 'Race',
+    strokes: [
+      {
+        path: 'M 55 110 L 55 210',
+        startX: 55,
+        startY: 110,
+        label: 'Down stroke',
+      },
+      {
+        path: 'M 55 135 C 55 110 145 110 145 150',
+        startX: 55,
+        startY: 135,
+        label: 'Shoulder',
+      },
+    ],
+  },
+  {
+    letter: 's',
+    viewBox: '0 0 200 300',
+    wordHint: 'Speed',
+    strokes: [
+      {
+        path: 'M 140 130 C 140 110 60 110 60 155 C 60 210 140 210 140 190',
+        startX: 140,
+        startY: 130,
+        label: 'S curve',
+      },
+    ],
+  },
+  {
+    letter: 't',
+    viewBox: '0 0 200 300',
+    wordHint: 'Track',
+    strokes: [
+      {
+        path: 'M 100 45 L 100 210',
+        startX: 100,
+        startY: 45,
+        label: 'Down stroke',
+      },
+      {
+        path: 'M 62 138 L 138 138',
+        startX: 62,
+        startY: 138,
+        label: 'Crossbar',
+      },
+    ],
+  },
+  {
+    letter: 'u',
+    viewBox: '0 0 200 300',
+    wordHint: 'Undercut',
+    strokes: [
+      {
+        path: 'M 55 110 L 55 182 Q 55 210 100 210 Q 145 210 145 182',
+        startX: 55,
+        startY: 110,
+        label: 'Curve',
+      },
+      {
+        path: 'M 145 182 L 145 110',
+        startX: 145,
+        startY: 182,
+        label: 'Up stroke',
+      },
+    ],
+  },
+  {
+    letter: 'v',
+    viewBox: '0 0 200 300',
+    wordHint: 'Victory',
+    strokes: [
+      {
+        path: 'M 55 110 L 100 210',
+        startX: 55,
+        startY: 110,
+        label: 'Left leg',
+      },
+      {
+        path: 'M 100 210 L 145 110',
+        startX: 100,
+        startY: 210,
+        label: 'Right leg',
+      },
+    ],
+  },
+  {
+    letter: 'w',
+    viewBox: '0 0 200 300',
+    wordHint: 'Wheel',
+    strokes: [
+      {
+        path: 'M 35 110 L 67 210',
+        startX: 35,
+        startY: 110,
+        label: 'Far left',
+      },
+      {
+        path: 'M 67 210 L 100 155',
+        startX: 67,
+        startY: 210,
+        label: 'Left inner',
+      },
+      {
+        path: 'M 100 155 L 133 210',
+        startX: 100,
+        startY: 155,
+        label: 'Right inner',
+      },
+      {
+        path: 'M 133 210 L 165 110',
+        startX: 133,
+        startY: 210,
+        label: 'Far right',
+      },
+    ],
+  },
+  {
+    letter: 'x',
+    viewBox: '0 0 200 300',
+    wordHint: 'eXtra',
+    strokes: [
+      {
+        path: 'M 55 110 L 145 210',
+        startX: 55,
+        startY: 110,
+        label: 'Left diagonal',
+      },
+      {
+        path: 'M 145 110 L 55 210',
+        startX: 145,
+        startY: 110,
+        label: 'Right diagonal',
+      },
+    ],
+  },
+  {
+    letter: 'y',
+    viewBox: '0 0 200 300',
+    wordHint: 'Yellow flag',
+    strokes: [
+      {
+        path: 'M 55 110 L 100 178',
+        startX: 55,
+        startY: 110,
+        label: 'Left arm',
+      },
+      {
+        path: 'M 145 110 L 100 178 L 65 275',
+        startX: 145,
+        startY: 110,
+        label: 'Right arm and tail',
+      },
+    ],
+  },
+  {
+    letter: 'z',
+    viewBox: '0 0 200 300',
+    wordHint: 'Zoom',
+    strokes: [
+      {
+        path: 'M 55 110 L 145 110',
+        startX: 55,
+        startY: 110,
+        label: 'Top bar',
+      },
+      {
+        path: 'M 145 110 L 55 210',
+        startX: 145,
+        startY: 110,
+        label: 'Diagonal',
+      },
+      {
+        path: 'M 55 210 L 145 210',
+        startX: 55,
+        startY: 210,
+        label: 'Bottom bar',
+      },
+    ],
+  },
+];

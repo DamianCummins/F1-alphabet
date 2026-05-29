@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { LETTERS } from './data/letters';
+import { LETTERS, LOWERCASE_LETTERS } from './data/letters';
 import LetterScreen from './components/LetterScreen';
 
 type Screen = 'welcome' | 'learning';
@@ -66,7 +66,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
               letterSpacing: '-0.02em',
             }}
           >
-            A–Z
+            Aa–Zz
           </span>
         </div>
 
@@ -119,22 +119,81 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
   );
 }
 
+function CaseToggle({
+  isLowercase,
+  onChange,
+}: {
+  isLowercase: boolean;
+  onChange: (lower: boolean) => void;
+}) {
+  return (
+    <div
+      className="flex shrink-0 rounded-full overflow-hidden"
+      style={{
+        border: '1.5px solid rgba(255,255,255,0.2)',
+        background: 'rgba(255,255,255,0.08)',
+      }}
+    >
+      <button
+        onClick={() => onChange(false)}
+        className="font-black transition-all"
+        style={{
+          padding: '5px 12px',
+          fontSize: '1rem',
+          color: !isLowercase ? '#0a0a1f' : 'rgba(255,255,255,0.45)',
+          background: !isLowercase
+            ? 'linear-gradient(135deg, #FFD700 0%, #FF9800 100%)'
+            : 'transparent',
+          borderRadius: '999px 0 0 999px',
+          lineHeight: 1,
+        }}
+      >
+        A
+      </button>
+      <button
+        onClick={() => onChange(true)}
+        className="font-black transition-all"
+        style={{
+          padding: '5px 12px',
+          fontSize: '1rem',
+          color: isLowercase ? '#0a0a1f' : 'rgba(255,255,255,0.45)',
+          background: isLowercase
+            ? 'linear-gradient(135deg, #FFD700 0%, #FF9800 100%)'
+            : 'transparent',
+          borderRadius: '0 999px 999px 0',
+          lineHeight: 1,
+        }}
+      >
+        a
+      </button>
+    </div>
+  );
+}
+
 function LearningScreen() {
   const [letterIndex, setLetterIndex] = useState(0);
   const [letterKey, setLetterKey] = useState(0);
+  const [isLowercase, setIsLowercase] = useState(false);
+
+  const activeLetters = isLowercase ? LOWERCASE_LETTERS : LETTERS;
 
   const navigateTo = (idx: number) => {
     setLetterIndex(idx);
     setLetterKey((k) => k + 1);
   };
 
+  const handleCaseChange = (lower: boolean) => {
+    setIsLowercase(lower);
+    setLetterKey((k) => k + 1);
+  };
+
   const handleLetterComplete = () => {
-    if (letterIndex < LETTERS.length - 1) {
+    if (letterIndex < activeLetters.length - 1) {
       setTimeout(() => navigateTo(letterIndex + 1), 600);
     }
   };
 
-  const letterData = LETTERS[letterIndex];
+  const letterData = activeLetters[letterIndex];
 
   // Scrollable letter strip — keep active letter centred
   const dotsRef = useRef<HTMLDivElement>(null);
@@ -154,28 +213,31 @@ function LearningScreen() {
     >
       {/* Header */}
       <div className="px-3 pt-3 pb-1 shrink-0">
-        {/* Current letter display */}
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span
-            className="font-black leading-none"
-            style={{
-              fontSize: 'clamp(2.5rem, 8vw, 4rem)',
-              color: '#FFD700',
-              textShadow: '0 3px 0 #7a5c00, 0 6px 18px rgba(255,215,0,0.35)',
-              fontFamily: 'Arial Black, Arial, sans-serif',
-            }}
-          >
-            {letterData.letter}
-          </span>
-          <span
-            className="font-semibold"
-            style={{
-              color: 'rgba(255,255,255,0.65)',
-              fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
-            }}
-          >
-            is for {letterData.wordHint}
-          </span>
+        {/* Current letter display + case toggle */}
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <span
+              className="font-black leading-none shrink-0"
+              style={{
+                fontSize: 'clamp(2.5rem, 8vw, 4rem)',
+                color: '#FFD700',
+                textShadow: '0 3px 0 #7a5c00, 0 6px 18px rgba(255,215,0,0.35)',
+                fontFamily: 'Arial Black, Arial, sans-serif',
+              }}
+            >
+              {letterData.letter}
+            </span>
+            <span
+              className="font-semibold truncate"
+              style={{
+                color: 'rgba(255,255,255,0.65)',
+                fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
+              }}
+            >
+              is for {letterData.wordHint}
+            </span>
+          </div>
+          <CaseToggle isLowercase={isLowercase} onChange={handleCaseChange} />
         </div>
 
         {/* Full-width scrollable letter strip */}
@@ -191,7 +253,7 @@ function LearningScreen() {
             paddingBottom: 2,
           }}
         >
-          {LETTERS.map((l, i) => (
+          {activeLetters.map((l, i) => (
             <button
               key={l.letter}
               ref={i === letterIndex ? activeDotRef : undefined}
@@ -226,7 +288,7 @@ function LearningScreen() {
           <LetterScreen
             key={letterKey}
             letterData={letterData}
-            isLast={letterIndex === LETTERS.length - 1}
+            isLast={letterIndex === activeLetters.length - 1}
             onLetterComplete={handleLetterComplete}
           />
         </div>
