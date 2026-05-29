@@ -637,10 +637,9 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Ball',
     strokes: [
       {
-        // Entry flick at top before the long downstroke
-        path: 'M 60 24 Q 50 16 55 28 L 55 210',
-        startX: 60,
-        startY: 24,
+        path: 'M 55 20 L 55 210',
+        startX: 55,
+        startY: 20,
         label: 'Tall stroke',
       },
       {
@@ -1030,13 +1029,14 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Undercut',
     strokes: [
       {
-        path: 'M 55 110 L 55 182 Q 55 210 100 210 Q 145 210 145 182',
+        // Down, curve under, back up to top-right
+        path: 'M 55 110 L 55 182 Q 55 210 100 210 Q 145 210 145 182 L 145 110',
         startX: 55,
         startY: 110,
         label: 'Curve',
       },
       {
-        // Right downstroke from top, ending with exit flick at bottom-right
+        // Descend from top-right with exit flick
         path: 'M 145 110 L 145 207 Q 150 217 158 213',
         startX: 145,
         startY: 110,
