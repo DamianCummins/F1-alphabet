@@ -614,17 +614,17 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Apple',
     strokes: [
       {
-        // Entry flick Q curves into the top of the circle, then the full oval
-        path: 'M 148 125 Q 155 118 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        // Entry flick Q curves into top of circle; oval uses same control points as o (x=45/155)
+        path: 'M 148 125 Q 155 118 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
         startX: 148,
         startY: 125,
         label: 'Round',
       },
       {
-        // Down stroke from top of circle to baseline with a small exit flick right
-        path: 'M 145 135 L 145 207 Q 148 218 157 214',
+        // Down stroke from top junction to baseline with exit flick right
+        path: 'M 145 128 L 145 207 Q 148 218 157 214',
         startX: 145,
-        startY: 135,
+        startY: 128,
         label: 'Down stroke',
       },
     ],
@@ -644,10 +644,10 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Tall stroke',
       },
       {
-        // Two-segment bezier matching d's circle, mirrored horizontally
-        path: 'M 55 135 C 55 110 145 110 145 160 C 145 210 55 210 55 185',
+        // Right-side oval: mirrors d's circle, uses x=155 control points like o
+        path: 'M 55 128 C 55 110 155 110 155 160 C 155 210 55 210 55 192',
         startX: 55,
-        startY: 135,
+        startY: 128,
         label: 'Bump',
       },
     ],
@@ -660,9 +660,9 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Car',
     strokes: [
       {
-        path: 'M 140 130 C 140 110 60 110 60 160 C 60 210 140 210 140 190',
-        startX: 140,
-        startY: 130,
+        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
+        startX: 145,
+        startY: 128,
         label: 'Arc',
       },
     ],
@@ -675,10 +675,10 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Driver',
     strokes: [
       {
-        // Circle: two-segment bezier, symmetric with b's bump
-        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        // Left-side oval: same control points as o (x=45), symmetric with b's bump
+        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
         startX: 145,
-        startY: 135,
+        startY: 128,
         label: 'Circle',
       },
       {
@@ -736,15 +736,15 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Gear',
     strokes: [
       {
-        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
         startX: 145,
-        startY: 135,
+        startY: 128,
         label: 'Circle',
       },
       {
-        path: 'M 145 135 L 145 260 C 145 278 55 278 55 260',
+        path: 'M 145 128 L 145 260 C 145 278 55 278 55 260',
         startX: 145,
-        startY: 135,
+        startY: 128,
         label: 'Descender',
       },
     ],
@@ -932,10 +932,10 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Down stroke',
       },
       {
-        // Bump: same two-segment geometry as b's bump (and d's circle)
-        path: 'M 55 135 C 55 110 145 110 145 160 C 145 210 55 210 55 185',
+        // Right-side oval: same geometry as b's bump (x=155 control points)
+        path: 'M 55 128 C 55 110 155 110 155 160 C 155 210 55 210 55 192',
         startX: 55,
-        startY: 135,
+        startY: 128,
         label: 'Bump',
       },
     ],
@@ -948,15 +948,17 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Qualify',
     strokes: [
       {
-        path: 'M 145 135 C 145 110 55 110 55 160 C 55 210 145 210 145 185',
+        // Left-side oval: same geometry as d's circle
+        path: 'M 145 128 C 145 110 45 110 45 160 C 45 210 145 210 145 192',
         startX: 145,
-        startY: 135,
+        startY: 128,
         label: 'Circle',
       },
       {
-        path: 'M 145 135 L 145 278',
+        // Descender with exit flick at the bottom
+        path: 'M 145 128 L 145 270 Q 152 282 162 278',
         startX: 145,
-        startY: 135,
+        startY: 128,
         label: 'Down stroke',
       },
     ],
@@ -1034,11 +1036,11 @@ export const LOWERCASE_LETTERS: LetterData[] = [
         label: 'Curve',
       },
       {
-        // Up stroke with a small rightward exit flick at the top
-        path: 'M 145 182 L 145 113 Q 149 107 156 110',
+        // Right downstroke from top, ending with exit flick at bottom-right
+        path: 'M 145 110 L 145 207 Q 150 217 158 213',
         startX: 145,
-        startY: 182,
-        label: 'Up stroke',
+        startY: 110,
+        label: 'Down stroke',
       },
     ],
   },
