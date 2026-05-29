@@ -699,8 +699,8 @@ export const LOWERCASE_LETTERS: LetterData[] = [
     wordHint: 'Engine',
     strokes: [
       {
-        path: 'M 63 160 L 145 160 C 145 110 60 110 60 160 C 60 210 145 210 145 185',
-        startX: 63,
+        path: 'M 60 160 L 147 160 C 147 105 57 105 57 160 C 57 215 147 215 147 187',
+        startX: 60,
         startY: 160,
         label: 'Loop',
       },
